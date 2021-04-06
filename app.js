@@ -3,7 +3,6 @@ const app = express()
 const cookieParser = require("cookie-parser")
 const { v4: uuidv4 } = require('uuid')
 const { Account } = require('./db.js')
-const matchCredentials = require('./utils.js')
 
 app.set('view engine', 'ejs')
 app.use(cookieParser())
