@@ -36,11 +36,12 @@ app.post('/create', async function (req, res) {
 })
 
 // login
-app.post('/login', function (req, res) {
-    if (matchCredentials(req.body)) {
+app.post('/login', async function (req, res) {
+    let body = req.body;
+    let user = await Account.findOne({ where: { username: body.username } });
+    if (user !== undefined && body.password === user.password) {
         res.render('pages/members')
-    }
-    else {
+    } else {
         res.redirect('/error')
     }
 })
