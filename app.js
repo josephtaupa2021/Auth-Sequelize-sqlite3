@@ -18,18 +18,11 @@ app.get('/loginPage', function (req, res) {
 // create account
 app.post('/create', async function (req, res) {
     let body = req.body;
-    let id = uuidv4();
-
     const user = await Account.create({
         username: body.username,
         password: body.password,
-        sessions: id
     });
 
-    res.cookie('SID', id, {
-        expires: new Date(Date.now() + 900000),
-        httpOnly: true
-    })
     console.log(user.toJSON())
     res.redirect('/')
 })
@@ -37,8 +30,18 @@ app.post('/create', async function (req, res) {
 // login
 app.post('/login', async function (req, res) {
     let body = req.body;
+    let id = uuidv4();
+
     let user = await Account.findOne({ where: { username: body.username } });
     if (user !== undefined && body.password === user.password) {
+        // fake_db.sessions[id] = {
+        //     user: user,
+        //     timeOfLogin: Date.now()
+        // }
+        res.cookie('SID', id, {
+            expires: new Date(Date.now() + 900000),
+            httpOnly: true
+        })
         res.render('pages/members')
     } else {
         res.redirect('/error')

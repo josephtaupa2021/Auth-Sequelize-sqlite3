@@ -4,20 +4,14 @@ const sequelize = new Sequelize('sqlite::memory:');
 class Account extends Model { }
 Account.init({
     username: DataTypes.STRING,
-    password: DataTypes.STRING,
-    sessions: DataTypes.STRING
-},
-    {
-        sequelize, modelName: 'account'
-    }
-);
+    password: DataTypes.STRING
+}, { sequelize, modelName: 'account' });
 
-(async () => {
-    await sequelize.sync()
-})()
+class Session extends Model { }
+Session.init({}, { sequelize });
 
-let models = {
-    Account: Account
-}
+(async () => { await sequelize.sync() })()
+
+let models = { Account: Account }
 
 module.exports = models;
