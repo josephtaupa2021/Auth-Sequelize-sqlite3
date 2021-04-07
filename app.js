@@ -2,7 +2,7 @@ const express = require('express')
 const app = express()
 const cookieParser = require("cookie-parser")
 const { v4: uuidv4 } = require('uuid')
-const { Account } = require('./db.js')
+const { Account, Session } = require('./db.js')
 
 app.set('view engine', 'ejs')
 app.use(cookieParser())
@@ -22,8 +22,7 @@ app.post('/create', async function (req, res) {
         username: body.username,
         password: body.password,
     });
-
-    console.log(user.toJSON())
+    console.log(user.toJSON());
     res.redirect('/')
 })
 
@@ -34,10 +33,14 @@ app.post('/login', async function (req, res) {
 
     let user = await Account.findOne({ where: { username: body.username } });
     if (user !== undefined && body.password === user.password) {
-        // fake_db.sessions[id] = {
-        //     user: user,
-        //     timeOfLogin: Date.now()
-        // }
+
+        const session = await Session.create({
+            user: user.username,
+            sessionID: id,
+            timeOfLogin: Date.now(),
+        });
+        console.log(session.toJSON());
+
         res.cookie('SID', id, {
             expires: new Date(Date.now() + 900000),
             httpOnly: true
